@@ -1,17 +1,58 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import ReactDOM from "react-dom";
+import CommentDetail from "./CommentDetail";
+import faker from "faker";
+import ApprovalCard from "./ApprovalCard";
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+const Message = (props) => {
+  return (
+    <div className="ui message">
+      {props.header}
+      {props.text}
+    </div>
+  )
+}
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+const Segment = (props) => {
+  return (
+    <div className="ui placeholder segment">
+      {props.children}
+    </div>
+  )
+}
+
+
+
+const App = () => {
+
+  return (
+    <div className="ui container comments">
+      <Message header={<div className="header">Changes In Service</div>} text={<p>We're changing the game. Lookout.</p>} />
+      <ApprovalCard>
+        "CHECK MY STYLE"
+        <CommentDetail
+          author="sammy"
+          avatar={faker.image.animals()}
+          content="tought"
+        />
+      </ApprovalCard>
+
+      <ApprovalCard>
+        <CommentDetail
+          author="jammy"
+          avatar={faker.image.animals()}
+          content="its sweet"
+        />
+      </ApprovalCard>
+      <ApprovalCard>
+        <CommentDetail
+          author="fimmy"
+          avatar={faker.image.sports()}
+          content="NOICE BURH"
+        />
+      </ApprovalCard>
+    </div>
+  );
+};
+
+ReactDOM.render(<App />, document.getElementById("root"));
