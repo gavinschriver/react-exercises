@@ -23,7 +23,8 @@ const TestTimer = (props) => {
   }
 
   useEffect(() => {
-    let interval = null;
+      let interval = null;
+      //if timer is On...
     if (isActive) {
       if (seconds > 0) {
         interval = setInterval(() => {
@@ -31,6 +32,7 @@ const TestTimer = (props) => {
           setTimeTotal((timeTotal) => timeTotal + 1);
         }, 1000);
       } else toggle();
+        // otherwise, if timer is off AND 'seconds' isn't 0...
     } else if (!isActive && seconds !== 0) {
       clearInterval(interval);
     }
@@ -43,11 +45,16 @@ const TestTimer = (props) => {
       setSeconds(timerVal);
     }
   }, [isActive]);
+    
+    useEffect(() => {
+        setSeconds(timerVal)
+    }, [timerVal])
 
   return (
-    <div className="app">
+    <div>
       <div className="time">{seconds}s</div>
-      <div>Total time: {timeTotal}</div>
+          <div>Total time: {timeTotal}</div>
+          <div>Timer value:{timerVal}</div>
       <div className="row">
         <button
           className={`button button-primary button-primary-${
@@ -58,12 +65,29 @@ const TestTimer = (props) => {
           {isActive ? "Pause" : "Start"}
         </button>
         <button className="button" onClick={reset}>
-          Reset
+                  Reset
         </button>
-        <input value={timerVal} onChange={(e) => setTimerVal(e.target.value)} />
+              <select value={timerVal} onChange={(e) => {
+                  setTimerVal(e.target.value)
+                  reset()
+              }}>
+                  <option value={10}>10 seconds</option>
+                  <option value={20}>20 seconds</option>
+                  <option value={30}>30 seconds</option>
+              </select>
       </div>
     </div>
   );
 };
 
 export default TestTimer;
+
+
+
+
+
+
+
+
+
+{/* <input value={timerVal} onChange={(e) => setTimerVal(e.target.value)} /> */}

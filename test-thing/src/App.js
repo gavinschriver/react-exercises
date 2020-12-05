@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Timer from "./Timer";
 import TestTimer from "./TestTimer";
 import IconToggle from "./IconToggle";
+import SelectedIconDisplay from "./SelectedIconDisplay";
 
 function App() {
   const testData = [
@@ -14,95 +15,62 @@ function App() {
     { id: 5, name: "farnsk" },
   ];
 
-  const [selected, setSelected] = useState([])
+  const [selected, setSelected] = useState([]);
 
   const handleSelect = (item) => {
-    setSelected([...selected, item])
+    setSelected([...selected, item]);
   };
 
   const handleDeselect = (id) => {
-    console.log()
-    const newArray = selected.filter(selectedItem => selectedItem.id !== id)
-    setSelected(newArray)
-  }
-
-  // my shitty big fat timer
-  const [timerValue, setTimerValue] = useState(0);
-  const [countdown, setCountdown] = useState(0);
-  const [totalTime, setTotalTime] = useState(0);
-  const [timerOn, setTimerOn] = useState(false);
-
-  const [startButton, setStartButton] = useState(true);
-  const [pauseButton, setPauseButton] = useState(false);
-  const [stopButton, setStopButton] = useState(false);
-
-  const [stopCount, setStopCount] = useState(0);
-
-  const addTime = () => {
-    if (countdown > 0) {
-      let timeout = setTimeout(() => {
-        setCountdown(countdown - 1);
-        setTotalTime(totalTime + 1);
-      }, 1000);
-    } else {
-      setTimerOn(false);
-      setStopButton(false);
-      setPauseButton(false);
-      setStartButton(true);
-    }
+    console.log();
+    const newArray = selected.filter((selectedItem) => selectedItem.id !== id);
+    setSelected(newArray);
   };
 
-  if (timerOn) {
-    addTime();
-  }
+  const testValuesToSubmit = () => {
+    console.log({ selectedIds: selected });
+  };
 
   //copypasta ripoff attempts
-  const [seconds, setSeconds] = useState(0);
+
+  //seconds is the current duration left for the timer to count
+  // timer Val is what the countdown duration is set to be every time 
+  // we start from the beginning 
+  const [seconds, setSeconds] = useState(10);
   const [isActive, setIsActive] = useState(false);
   const [timeTotal, setTimeTotal] = useState(0);
-  const [timerVal, setTimerVal] = useState(0);
+  const [timerVal, setTimerVal] = useState(10);
+
+  const [timerValues, setTimerValues] = useState({
+    second: 0,
+    isActive: false,
+    totalTime: 0,
+  });
 
   return (
     <div className="App">
-      <header className="App-header">
-        <div>
-          <div>Time remaining: {countdown}</div>
-          <div>Total time: {totalTime}</div>
-          <div>Timer value: {timerValue}</div>
-          <div>{timerOn ? `Timer is On` : `Timer is OFF`}</div>
-          <div>Stop Count:{stopCount}</div>
-        </div>
-      </header>
-      {/* <Timer
-        timerValue={timerValue}
-        timerOn={timerOn}
-        setTimerOn={setTimerOn}
-        setCountdown={setCountdown}
-        startButton={startButton}
-        setStartButton={setStartButton}
-        pauseButton={pauseButton}
-        setPauseButton={setPauseButton}
-        stopButton={stopButton}
-        setStopButton={setStopButton}
-        setTimerValue={setTimerValue}
-        totalTime={setTotalTime}
-        setTotalTime={setTotalTime}
-        stopCount={stopCount}
-        setStopCount={setStopCount}
-        setTimerValue={setTimerValue}
-        countdown={countdown}
-      /> */}
-      <TestTimer
-        seconds={seconds}
-        setSeconds={setSeconds}
-        isActive={isActive}
-        setIsActive={setIsActive}
-        timeTotal={timeTotal}
-        setTimeTotal={setTimeTotal}
-        timerVal={timerVal}
-        setTimerVal={setTimerVal}
-      />
-      <IconToggle collection={testData} select={handleSelect} deselect={handleDeselect} selected={selected} />
+      <header className="App-header">TIMER</header>
+
+
+      <div className="app">
+
+        <TestTimer
+          seconds={seconds}
+          setSeconds={setSeconds}
+          isActive={isActive}
+          setIsActive={setIsActive}
+          timeTotal={timeTotal}
+          setTimeTotal={setTimeTotal}
+          timerVal={timerVal}
+          setTimerVal={setTimerVal}
+        />
+        <IconToggle
+          collection={testData}
+          select={handleSelect}
+          selected={selected}
+        />
+        <SelectedIconDisplay selected={selected} deselect={handleDeselect} />
+      </div>
     </div>
   );
 }
