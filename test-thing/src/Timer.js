@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 export default (props) => {
   const {
@@ -14,13 +14,13 @@ export default (props) => {
     setStopButton,
     stopCount,
     setStopCount,
-    handleTimerChange
+    countdown,
+    setTimerValue,
   } = props;
 
   const toggleTimer = () => {
     setTimerOn(!timerOn);
   };
-
 
   const handleStartButtonPress = (e) => {
     e.preventDefault();
@@ -55,6 +55,28 @@ export default (props) => {
       setStopCount(1);
     }
   };
+
+  const handleTimerChange = (value) => {
+    setStartButton(true);
+    setTimerValue(value);
+    setCountdown(value);
+    setStopCount(0);
+  };
+
+//   reset the timer if countdown reaches 0
+  useEffect(() => {
+    if (countdown === 0) {
+        handleTimerChange(timerValue);
+    }
+  }, [countdown]);
+
+  // disable buttons if timerValue is 0, aka first <option's> value
+  useEffect(() => {
+    if (parseInt(timerValue) === 0) {
+      setStartButton(false);
+      setStopButton(false);
+    }
+  }, [timerValue]);
 
   return (
     <div>

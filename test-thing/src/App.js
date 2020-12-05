@@ -2,6 +2,7 @@ import logo from "./logo.svg";
 import "./App.css";
 import { useEffect, useState } from "react";
 import Timer from "./Timer";
+import TestTimer from "./TestTimer";
 
 function App() {
   const [timerValue, setTimerValue] = useState(0);
@@ -15,16 +16,9 @@ function App() {
 
   const [stopCount, setStopCount] = useState(0);
 
-  const handleTimerChange = (value) => {
-    setStartButton(true);
-    setTimerValue(value);
-    setCountdown(value);
-    setStopCount(0);
-  };
-
   const addTime = () => {
     if (countdown > 0) {
-      setTimeout(() => {
+      let timeout = setTimeout(() => {
         setCountdown(countdown - 1);
         setTotalTime(totalTime + 1);
       }, 1000);
@@ -40,19 +34,11 @@ function App() {
     addTime();
   }
 
-  useEffect(() => {
-    if (countdown === 0) {
-      handleTimerChange(timerValue);
-    }
-  }, [countdown]);
-
-  useEffect(() => {
-    console.log(timerValue);
-    if (parseInt(timerValue) === 0) {
-      setStartButton(false);
-      setStopButton(false);
-    }
-  }, [timerValue]);
+  //copypasta ripoff attempts
+  const [seconds, setSeconds] = useState(10);
+  const [isActive, setIsActive] = useState(false);
+  const [timeTotal, setTimeTotal] = useState(0);
+  const [timerVal, setTimerVal] = useState(0);
 
   return (
     <div className="App">
@@ -70,21 +56,29 @@ function App() {
         timerOn={timerOn}
         setTimerOn={setTimerOn}
         setCountdown={setCountdown}
-
         startButton={startButton}
         setStartButton={setStartButton}
         pauseButton={pauseButton}
         setPauseButton={setPauseButton}
         stopButton={stopButton}
         setStopButton={setStopButton}
-
         setTimerValue={setTimerValue}
         totalTime={setTotalTime}
         setTotalTime={setTotalTime}
         stopCount={stopCount}
         setStopCount={setStopCount}
-
-        handleTimerChange={handleTimerChange}
+        setTimerValue={setTimerValue}
+        countdown={countdown}
+      />
+      <TestTimer
+        seconds={seconds}
+        setSeconds={setSeconds}
+        isActive={isActive}
+        setIsActive={setIsActive}
+        timeTotal={timeTotal}
+        setTimeTotal={setTimeTotal}
+        timerVal={timerVal}
+        setTimerVal={setTimerVal}
       />
     </div>
   );
