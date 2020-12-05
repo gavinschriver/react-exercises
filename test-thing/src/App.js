@@ -5,6 +5,7 @@ import Timer from "./Timer";
 import TestTimer from "./TestTimer";
 import IconToggle from "./IconToggle";
 import SelectedIconDisplay from "./SelectedIconDisplay";
+import SecondTestTimer from "./SecondTestTimer";
 
 function App() {
   const testData = [
@@ -33,46 +34,51 @@ function App() {
 
   //copypasta ripoff attempts
 
-  //seconds is the current duration left for the timer to count
-  // timer Val is what the countdown duration is set to be every time 
-  // we start from the beginning 
-  const [seconds, setSeconds] = useState(10);
-  const [isActive, setIsActive] = useState(false);
-  const [timeTotal, setTimeTotal] = useState(0);
-  const [timerVal, setTimerVal] = useState(10);
-
   const [timerValues, setTimerValues] = useState({
-    second: 0,
+    timerVal: 0,
+    seconds: 0,
     isActive: false,
-    totalTime: 0,
+    timeTotal: 0,
   });
 
   return (
     <div className="App">
       <header className="App-header">TIMER</header>
-
-
       <div className="app">
-
-        <TestTimer
-          seconds={seconds}
-          setSeconds={setSeconds}
-          isActive={isActive}
-          setIsActive={setIsActive}
-          timeTotal={timeTotal}
-          setTimeTotal={setTimeTotal}
-          timerVal={timerVal}
-          setTimerVal={setTimerVal}
-        />
         <IconToggle
           collection={testData}
           select={handleSelect}
           selected={selected}
         />
         <SelectedIconDisplay selected={selected} deselect={handleDeselect} />
+        <SecondTestTimer timerValues={timerValues} setTimerValues={setTimerValues}/>
       </div>
     </div>
   );
 }
 
 export default App;
+
+
+
+
+
+  //seconds is the current duration left for the timer to count
+  // timer Val is what the countdown duration is set to be every time 
+  // we start from the beginning 
+//   const [seconds, setSeconds] = useState(0);
+//   const [isActive, setIsActive] = useState(false);
+//   const [timeTotal, setTimeTotal] = useState(0);
+//   const [timerVal, setTimerVal] = useState(0);
+
+// <TestTimer
+// timerValues={timerValues}
+// seconds={seconds}
+// setSeconds={setSeconds}
+// isActive={isActive}
+// setIsActive={setIsActive}
+// timeTotal={timeTotal}
+// setTimeTotal={setTimeTotal}
+// timerVal={timerVal}
+// setTimerVal={setTimerVal}
+// />
