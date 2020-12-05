@@ -1,6 +1,7 @@
 import logo from "./logo.svg";
 import "./App.css";
 import { useEffect, useState } from "react";
+import Timer from "./Timer";
 
 function App() {
   const [timerValue, setTimerValue] = useState(0);
@@ -14,64 +15,25 @@ function App() {
 
   const [stopCount, setStopCount] = useState(0);
 
-  const toggleTimer = () => {
-    setTimerOn(!timerOn);
-  };
-
   const handleTimerChange = (value) => {
-    setStartButton(true)
+    setStartButton(true);
     setTimerValue(value);
     setCountdown(value);
-    setStopCount(0)
-  };
-
-  const handleStartButtonPress = (e) => {
-    e.preventDefault()
-    toggleTimer();
-    setStartButton(false);
-    setPauseButton(true);
-    setStopButton(true);
     setStopCount(0);
   };
-
-  const handlePauseButtonPress = (e) => {
-    e.preventDefault()
-    toggleTimer();
-    setPauseButton(!pauseButton);
-    setStartButton(!startButton);
-  };
-
-  const handleStopButtonPress = (e) => {
-    e.preventDefault()
-    if (stopCount == 1) {
-      setCountdown(timerValue);
-      setStopButton(false);
-      setPauseButton(false)
-      setStartButton(true)
-      setStopCount(0);
-    } else {
-      if (timerOn) {
-        toggleTimer();
-        setStartButton(true)
-        setPauseButton(false)
-      }
-      setStopCount(1);
-    }
-  };
-
 
   const addTime = () => {
     if (countdown > 0) {
       setTimeout(() => {
         setCountdown(countdown - 1);
         setTotalTime(totalTime + 1);
-      }, 1000); 
+      }, 1000);
     } else {
       setTimerOn(false);
       setStopButton(false);
-      setPauseButton(false)
-      setStartButton(true)
-    };
+      setPauseButton(false);
+      setStartButton(true);
+    }
   };
 
   if (timerOn) {
@@ -79,42 +41,23 @@ function App() {
   }
 
   useEffect(() => {
-    if (countdown === 0 ) {
-      handleTimerChange(timerValue)
+    if (countdown === 0) {
+      handleTimerChange(timerValue);
     }
-  }, [countdown])
+  }, [countdown]);
 
   useEffect(() => {
-    console.log(timerValue)
+    console.log(timerValue);
     if (parseInt(timerValue) === 0) {
-      setStartButton(false)
-      setStopButton(false)
+      setStartButton(false);
+      setStopButton(false);
     }
-  }, [timerValue])
+  }, [timerValue]);
 
   return (
     <div className="App">
       <header className="App-header">
         <div>
-          <select
-            onChange={(e) => handleTimerChange(e.target.value)}
-            value={timerValue}
-          >
-            <option value={0}>Choose a time</option>
-            {[60, 120, 180, 240, 300].map((time) => {
-              return <option value={time}>{`${time / 60} minutes`}</option>;
-            })}
-            <option value={5}>gimme 5</option>
-          </select>
-          <button onClick={handleStartButtonPress} disabled={!startButton}>
-            {((stopButton || pauseButton) && startButton) ? `RESUME` : `START`}
-          </button>
-          <button onClick={handlePauseButtonPress} disabled={!pauseButton}>
-            PAUSE
-          </button>
-          <button onClick={handleStopButtonPress} disabled={!stopButton}>
-            {stopCount === 0 ? `STOP` : `RESET`}
-          </button>
           <div>Time remaining: {countdown}</div>
           <div>Total time: {totalTime}</div>
           <div>Timer value: {timerValue}</div>
@@ -122,6 +65,27 @@ function App() {
           <div>Stop Count:{stopCount}</div>
         </div>
       </header>
+      <Timer
+        timerValue={timerValue}
+        timerOn={timerOn}
+        setTimerOn={setTimerOn}
+        setCountdown={setCountdown}
+
+        startButton={startButton}
+        setStartButton={setStartButton}
+        pauseButton={pauseButton}
+        setPauseButton={setPauseButton}
+        stopButton={stopButton}
+        setStopButton={setStopButton}
+
+        setTimerValue={setTimerValue}
+        totalTime={setTotalTime}
+        setTotalTime={setTotalTime}
+        stopCount={stopCount}
+        setStopCount={setStopCount}
+
+        handleTimerChange={handleTimerChange}
+      />
     </div>
   );
 }
