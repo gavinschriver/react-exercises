@@ -8,50 +8,94 @@ import SelectedIconDisplay from "./SelectedIconDisplay";
 import SecondTestTimer from "./SecondTestTimer";
 
 function App() {
-  const testData = [
-    { id: 1, name: "apple" },
-    { id: 2, name: "food" },
-    { id: 3, name: "third" },
-    { id: 4, name: "NOICE" },
-    { id: 5, name: "farnsk" },
-  ];
+
+  //pretending like we're getting sometthing in edit mode
+  const [healing, setHealing] = useState({});
+  const [treatments, setTreatments] = useState([])
+
+  //this would be coming from provider context durrrr
+  const getHealing = () => {
+    return fetch("http://localhost:8088/healings/1")
+      .then((res) => res.json())
+  };
+
+  //zis would also be in ze treatment contex yahs
+  const getTreatments = () => {
+    fetch("http://localhost:8088/treatments")
+      .then((res) => res.json())
+      .then(setTreatments);
+  };
+
+  useEffect(() => {
+    getTreatments()
+    getHealing().then(setHealing);
+  }, []);
+  
+
 
   const [selected, setSelected] = useState([]);
 
   const handleSelect = (item) => {
     setSelected([...selected, item]);
   };
-
   const handleDeselect = (id) => {
-    console.log();
     const newArray = selected.filter((selectedItem) => selectedItem.id !== id);
     setSelected(newArray);
   };
+
 
   const testValuesToSubmit = () => {
     console.log({ selectedIds: selected });
   };
 
   //copypasta ripoff attempts
-
+  // set this to also pass in array of values for increments to populate select bar
+  //.. or make some default setting for the select bar intervals?
   const [timerValues, setTimerValues] = useState({
     timerVal: 0,
-    seconds: 0,
+    remaining: 0,
     isActive: false,
     timeTotal: 0,
   });
 
+  // const [healing, setHealing] = useState()
+  //in edit mode, this should be initialized as the val from
+  // the resource being edited
+  const [sessionTotal, setSessionTotal] = useState(0);
+
+  const handleSessionTotalChange = (e) => {
+    const newTotal = parseInt(e.target.value);
+    setSessionTotal(newTotal);
+  };
+
+  useEffect(() => {
+    if (timerValues.timeTotal > 0) {
+      setSessionTotal((sessionTotal) => sessionTotal + 1);
+    }
+  }, [timerValues.timeTotal]);
+
   return (
-    <div className="App">
-      <header className="App-header">TIMER</header>
+    <div>
       <div className="app">
+        <div>Editing healing {healing.id}</div>
         <IconToggle
-          collection={testData}
+          collection={treatments}
           select={handleSelect}
           selected={selected}
         />
         <SelectedIconDisplay selected={selected} deselect={handleDeselect} />
-        <SecondTestTimer timerValues={timerValues} setTimerValues={setTimerValues}/>
+
+        
+        <SecondTestTimer
+          timerValues={timerValues}
+          setTimerValues={setTimerValues}
+        >
+          <input
+            type="number"
+            value={sessionTotal}
+            onChange={handleSessionTotalChange}
+          />
+        </SecondTestTimer>
       </div>
     </div>
   );
@@ -59,13 +103,9 @@ function App() {
 
 export default App;
 
-
-
-
-
-  //seconds is the current duration left for the timer to count
-  // timer Val is what the countdown duration is set to be every time 
-  // we start from the beginning 
+//seconds is the current duration left for the timer to count
+// timer Val is what the countdown duration is set to be every time
+// we start from the beginning
 //   const [seconds, setSeconds] = useState(0);
 //   const [isActive, setIsActive] = useState(false);
 //   const [timeTotal, setTimeTotal] = useState(0);
