@@ -56,3 +56,23 @@
         setTimerValue={setTimerValue}
         countdown={countdown}
       /> */}
+
+      //seconds is the current duration left for the timer to count
+// timer Val is what the countdown duration is set to be every time
+// we start from the beginning
+//   const [seconds, setSeconds] = useState(0);
+//   const [isActive, setIsActive] = useState(false);
+//   const [timeTotal, setTimeTotal] = useState(0);
+//   const [timerVal, setTimerVal] = useState(0);
+
+// <TestTimer
+// timerValues={timerValues}
+// seconds={seconds}
+// setSeconds={setSeconds}
+// isActive={isActive}
+// setIsActive={setIsActive}
+// timeTotal={timeTotal}
+// setTimeTotal={setTimeTotal}
+// timerVal={timerVal}
+// setTimerVal={setTimerVal}
+// />

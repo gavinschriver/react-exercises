@@ -1,6 +1,6 @@
 import logo from "./logo.svg";
 import "./App.css";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Timer from "./Timer";
 import TestTimer from "./TestTimer";
 import IconToggle from "./IconToggle";
@@ -8,30 +8,31 @@ import SelectedIconDisplay from "./SelectedIconDisplay";
 import SecondTestTimer from "./SecondTestTimer";
 
 function App() {
-
-  //pretending like we're getting sometthing in edit mode
-  const [healing, setHealing] = useState({});
-  const [treatments, setTreatments] = useState([])
-
   //this would be coming from provider context durrrr
   const getHealing = () => {
-    return fetch("http://localhost:8088/healings/1")
-      .then((res) => res.json())
+    return fetch("http://localhost:8088/healings/1").then((res) => res.json());
   };
 
   //zis would also be in ze treatment contex yahs
   const getTreatments = () => {
-    fetch("http://localhost:8088/treatments")
+    return fetch("http://localhost:8088/treatments")
       .then((res) => res.json())
       .then(setTreatments);
   };
 
-  useEffect(() => {
-    getTreatments()
-    getHealing().then(setHealing);
-  }, []);
-  
+  //pretend like this is coming from treatment context
+  const [treatments, setTreatments] = useState([]);
+  const [healing, setHealing] = useState({selected:[]})
 
+  useEffect(() => {
+    getTreatments().then(() => {
+      getHealing().then(setHealing)
+    })
+  }, [])
+
+  useEffect(() => {
+    setSelected(healing.selected)
+  }, [healing])
 
   const [selected, setSelected] = useState([]);
 
@@ -43,82 +44,44 @@ function App() {
     setSelected(newArray);
   };
 
-
-  const testValuesToSubmit = () => {
-    console.log({ selectedIds: selected });
-  };
-
-  //copypasta ripoff attempts
-  // set this to also pass in array of values for increments to populate select bar
-  //.. or make some default setting for the select bar intervals?
-  const [timerValues, setTimerValues] = useState({
+  const [timer, setTimer] = useState({
     timerVal: 0,
     remaining: 0,
     isActive: false,
     timeTotal: 0,
   });
 
-  // const [healing, setHealing] = useState()
-  //in edit mode, this should be initialized as the val from
-  // the resource being edited
-  const [sessionTotal, setSessionTotal] = useState(0);
-
   const handleSessionTotalChange = (e) => {
     const newTotal = parseInt(e.target.value);
-    setSessionTotal(newTotal);
+    setTimer((timer) => ({
+      ...timer,
+      timeTotal: newTotal,
+    }));
   };
 
-  useEffect(() => {
-    if (timerValues.timeTotal > 0) {
-      setSessionTotal((sessionTotal) => sessionTotal + 1);
-    }
-  }, [timerValues.timeTotal]);
-
   return (
-    <div>
-      <div className="app">
-        <div>Editing healing {healing.id}</div>
-        <IconToggle
-          collection={treatments}
-          select={handleSelect}
-          selected={selected}
-        />
-        <SelectedIconDisplay selected={selected} deselect={handleDeselect} />
-
-        
-        <SecondTestTimer
-          timerValues={timerValues}
-          setTimerValues={setTimerValues}
-        >
-          <input
-            type="number"
-            value={sessionTotal}
-            onChange={handleSessionTotalChange}
-          />
-        </SecondTestTimer>
-      </div>
+    <div className="App">
+      <div>Editing {healing.id}</div>
+      <SecondTestTimer timer={timer} setTimer={setTimer}>
+        <div>
+          <label htmlFor="sessionTotal">Session Total: </label>
+        </div>
+      </SecondTestTimer>
+      <label htmlFor="sessionTotal">Editable Session Total: </label>
+      <input
+        type="number"
+        name="sessionTotal"
+        value={timer.timeTotal}
+        onChange={handleSessionTotalChange}
+      />
+      <IconToggle
+        collection={treatments}
+        select={handleSelect}
+        selected={selected}
+      />
+      <SelectedIconDisplay selected={selected} deselect={handleDeselect} />
     </div>
   );
 }
 
 export default App;
-
-//seconds is the current duration left for the timer to count
-// timer Val is what the countdown duration is set to be every time
-// we start from the beginning
-//   const [seconds, setSeconds] = useState(0);
-//   const [isActive, setIsActive] = useState(false);
-//   const [timeTotal, setTimeTotal] = useState(0);
-//   const [timerVal, setTimerVal] = useState(0);
-
-// <TestTimer
-// timerValues={timerValues}
-// seconds={seconds}
-// setSeconds={setSeconds}
-// isActive={isActive}
-// setIsActive={setIsActive}
-// timeTotal={timeTotal}
-// setTimeTotal={setTimeTotal}
-// timerVal={timerVal}
-// setTimerVal={setTimerVal}
-// />

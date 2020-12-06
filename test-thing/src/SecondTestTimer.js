@@ -1,100 +1,97 @@
-import React, { useState, useEffect } from "react";
-import "./secondTimer.css";
+import React, { useEffect } from "react";
+// import "./secondTimer.css";
 
 const SecondTestTimer = (props) => {
-  const { timerValues, setTimerValues } = props;
+  const { timer, setTimer } = props;
 
-  function toggle() {
-    setTimerValues((timerValues) => ({
-      ...timerValues,
-      isActive: !timerValues.isActive,
+  //switch Timer on or Off
+  const toggle = () => {
+    setTimer((timer) => ({
+      ...timer,
+      isActive: !timer.isActive
     }));
-  }
+  };
 
-  function reset() {
-    setTimerValues((timerValues) => ({
-      ...timerValues,
-      remaining: timerValues.timerVal,
-      isActive: false,
+  // when reset is pressed, make sure we turn off timer, but also
+  // reset us to whatever timer Value was previously selected
+  const reset = () => {
+    setTimer((timer) => ({
+      ...timer,
+      remaining: timer.timerVal,
+      isActive: false
     }));
-  }
+  };
 
   useEffect(() => {
     let interval = null;
     //if timer is On...
-    if (timerValues.isActive) {
+    if (timer.isActive) {
       // and if remaining is more than 0...
-      if (timerValues.remaining > 0) {
+      if (timer.remaining > 0) {
+        //set an interval that subtracts 1 from remaining and adds one to timeTotal
+        //every second
         interval = setInterval(() => {
-          setTimerValues((timerValues) => ({
-            ...timerValues,
-            remaining: timerValues.remaining - 1,
-            timeTotal: timerValues.timeTotal + 1,
+          setTimer((timer) => ({
+            ...timer,
+            remaining: timer.remaining - 1,
+            timeTotal: timer.timeTotal + 1
           }));
         }, 1000);
-        //otherwise, if timer is still on but remaining is 0, turn isActive to False
+        //otherwise, if timer is still on but remaining is 0, turn timer off
       } else toggle();
-      // otherwise, if timer is off AND 'remaining' isn't 0...
-    } else if (!timerValues.isActive && timerValues.remaining !== 0) {
+      // otherwise, if timer is off AND 'remaining' isn't 0...i dont understand this line LOL
+    } else if (!timer.isActive && timer.remaining !== 0) {
       clearInterval(interval);
     }
     return () => clearInterval(interval);
-  }, [timerValues.isActive, timerValues.remaining]);
+  }, [timer]);
 
-  // every time isActive changes, see if remaining is 0 and timetotal is more than 0 (timeTotal is for
-  //current life of the component, so checking this ensures we dont get an alert when we first load the page), and if so alert "times up"
+  //when isActive changes, if the clock hits 0, reset it to the currently selected val
+  // then wait a tiny bit and throw an alert
   useEffect(() => {
-    if (timerValues.remaining == 0 && timerValues.timeTotal > 0) {
-      setTimerValues((timerValues) => ({
-        ...timerValues,
-        remaining: timerValues.timerVal,
+    if (timer.remaining === 0 && timer.timeTotal > 0) {
+      setTimer((timer) => ({
+        ...timer,
+        remaining: timer.timerVal
       }));
-      alert("times up");
+      setTimeout(() => {
+        alert("Times up");
+      }, 500);
     }
-  }, [timerValues.isActive]);
+  }, [timer.isActive]);
 
-  // update the countdown to be the same as timerVal when timerVal is selected
-  useEffect(() => {
-    setTimerValues((timerValues) => ({
-      ...timerValues,
-      remaining: timerValues.timerVal,
+  const handleTimerChange = (e) => {
+    setTimer((timer) => ({
+      ...timer,
+      remaining: e.target.value,
+      timerVal: e.target.value
     }));
-  }, [timerValues.timerVal]);
+  };
 
   return (
     <div>
-      <div className="time">{timerValues.remaining}s</div>
-      <div>Total time: {timerValues.timeTotal}</div>
-      <div>Timer value:{timerValues.timerVal}</div>
+      <div className="time">Currently remaining: {timer.remaining}s</div>
+      <div>Total time counted: {timer.timeTotal}s</div>
+      <div>Timer value:{timer.timerVal}s</div>
       <div className="row">
         <button
-          disabled={timerValues.timerVal === 0 ? true : false}
+          disabled={timer.timerVal == 0 ? true : false}
           className={`button button-primary button-primary-${
-            timerValues.isActive ? "active" : "inactive"
+            timer.isActive ? "active" : "inactive"
           }`}
           onClick={toggle}
         >
-          {timerValues.isActive ? "Pause" : "Start"}
+          {timer.isActive ? "Pause" : "Start"}
         </button>
         <button className="button" onClick={reset}>
           Reset
         </button>
-        <select
-          value={timerValues.timerVal}
-          onChange={(e) => {
-            setTimerValues((timerValues) => ({
-              ...timerValues,
-              timerVal: e.target.value,
-            }));
-            reset();
-          }}
-        >
+        <select value={timer.timerVal} onChange={handleTimerChange}>
           <option value={0}>Set timer duration</option>
           <option value={10}>10</option>
           <option value={20}>20</option>
           <option value={30}>30</option>
         </select>
-        {props.children}
       </div>
     </div>
   );
